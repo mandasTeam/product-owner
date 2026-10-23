@@ -16,14 +16,22 @@ Se o caso não bate com a coluna *Quando é necessário*, corte e registre em "F
 | Labels padrão do GitHub (`good first issue`, `help wanted`, `wontfix`…) | algum template ou issue usa |
 | Templates de issue | o fluxo do time cria issues por eles |
 | Campos do Project além de Status | alguma visão ou decisão filtra por ele |
-| Spec por issue com o código inteiro | nunca; spec = decisões, interfaces, valores, testes |
+| Spec por issue com o código inteiro | só com D do usuário pedindo plano "mastigado" para quem implementa; senão spec = decisões, interfaces, valores, testes |
 | Arquivo de plano por integrante | mais de uma pessoa implementa |
 | ADR | decisão difícil de reverter, com alternativa real descartada |
 | `.gitkeep` em pastas futuras | nunca; a tarefa que usa a pasta cria a pasta |
 | Badges | o badge informa estado (CI, versão, link executável) |
 | Time de agentes / skills herdados de outro projeto | cada peça tem uso real neste repo; diga o que saiu e por quê |
 | Agente revisor com permissão de escrita | nunca; revisor é só leitura |
-| Issue + branch para limpeza antes do desenvolvimento | a `main` já é protegida ou o usuário pede PR |
+| Issue + branch para limpeza antes do desenvolvimento | o usuário pede PR (`main` protegida não basta: o dono faz push como admin) |
+| `CODEOWNERS` | a proteção exige *code owner review*; se o revisor vem de uma matriz no plano, é ruído |
+| Template de issue "tarefa" | as tarefas ainda não existem como issues; senão duplica o template do agente |
+| Template de PR em dois lugares (`.github/` e skill do agente) | nunca; a skill lê o de `.github/` |
+| Suporte a Colab (badges, célula que clona o repo) | a fonte exige Colab, não "Colab ou GitHub" |
+| Seções "Resumo", "Contribuições" no relatório | a fonte pede; autoria já está no git |
+| `docs/` que repete seção do README | nunca; o README aponta para a tabela/figura gerada |
+| Modelo serializado (`joblib`, `.pkl`) | algum notebook, seção ou deploy carrega o arquivo |
+| "Roteiro de defesa", mínimo de commits por PR, prazo de PR em dias | a fonte ou o usuário pede |
 | Cópia do plano fora do repo | nunca depois do commit inicial |
 
 ## Sinais de delírio (conteúdo inventado)

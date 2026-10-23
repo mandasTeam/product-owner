@@ -30,7 +30,9 @@ Não use quando o diff cabe numa frase: faça direto e diga o que fez.
 - **Necessário** — passa no teste das três perguntas (passo 7).
 - **Fonte única** — cada informação mora num lugar só; os outros apontam para ele.
 - **Proporção** — o plano carrega decisões, não o programa. Plano maior que o código que
-  descreve já escreveu o código.
+  descreve já escreveu o código — exceto quando o usuário quer o plano "mastigado" com código
+  de referência para quem implementa (ex.: colegas de faculdade): aí isso vira um D do usuário
+  que justifica o aviso de proporção do auditor, e o código não se corta sem perguntar.
 
 ## Procedimento
 
@@ -39,6 +41,8 @@ Não use quando o diff cabe numa frase: faça direto e diga o que fez.
    Cresceu no meio: pare e suba de tamanho. *Pronto quando:* o tamanho está dito em uma linha.
 1. **Inventário de fontes.** Ler cada fonte inteira (PDF com OCR se preciso, repo, rubrica,
    repo de referência, conversa anterior). Pessoas e contas saem do GitHub, nunca de memória.
+   Enunciado que não está no repo: procure o arquivo na máquina (`Downloads`, por nome do
+   trabalho) e extraia o texto antes de perguntar — é fato levantável, não pergunta.
    *Pronto quando:* a tabela de fontes lista cada uma com o que ela fixa.
 2. **Extrair requisitos.** `R1..Rn`, cada um com trecho literal curto e localização
    (página/seção/linha). Nomes próprios (disciplina, produto, cliente) copiados exatamente.
@@ -89,8 +93,10 @@ Não use quando o diff cabe numa frase: faça direto e diga o que fez.
 9. **Materializar no GitHub** (se pedido), com `gh`. Repo → arquivos do commit inicial (lint
    e testes locais verdes; config de lint exclui os blocos de código do plano) → labels
    (apagar as padrão que nada usa) → issues em ordem de dependência → Project → convites →
-   proteção da `main` por último. Issue = o que entregar + critérios de aceite em checkbox +
-   `bloqueada por` + link para a seção do plano; o *como* fica no plano, não duplicado na issue.
+   proteção da `main` por último. Issue = o que entregar + linha `Atende: R…· D…` + critérios
+   de aceite em checkbox + `bloqueada por` + link para a seção do plano; o *como* fica no plano,
+   não duplicado na issue. Issue-mãe também leva checkbox (o auditor acusa sem) e aponta para a
+   tabela de tarefas em vez de copiá-la.
    *Pronto quando:* CI do último commit verde.
 10. **Auditar.** `python <pasta-desta-skill>/scripts/auditar_escopo.py <repo> --gh dono/repo`.
     Cada ERRO corrigido; cada AVISO cortado ou justificado por R/D no plano.
@@ -98,13 +104,26 @@ Não use quando o diff cabe numa frase: faça direto e diga o que fez.
 
 ## Modo limpeza (o escopo já existe)
 
-1. Rode o auditor e inventarie os artefatos do repo (`git ls-files`, labels, issues, campos).
+1. Rode o auditor e inventarie os artefatos do repo (`git ls-files`, labels, issues e corpos,
+   campos do Project, colaboradores **e convites pendentes**, proteção da `main`, cópias do
+   plano fora do repo). Confira os requisitos contra a fonte original, não contra o plano.
 2. Teste de necessidade em cada um; liste os cortes com motivo.
-3. Antes do início do desenvolvimento, limpeza vai direto na `main` em commits `cleanup:`,
-   sem issue nem branch, a menos que a `main` já esteja protegida ou o usuário peça PR.
-4. Depois de cortar: renumere seções, busque cada termo removido até dar zero, e apague cópias
-   antigas do plano fora do repo (ou declare qual é a fonte única).
-5. Rode o auditor de novo e reporte o antes/depois.
+3. Pedido de "verificação": entregue o relatório (quebrado/inconsistente · cortes propostos ·
+   o que fica e por quê) e **uma rodada** só com o que o usuário pode querer manter por motivo
+   que o repo não mostra (plano didático, material de apresentação, cópia externa, nome da
+   fonte). O resto dos cortes já vai aprovado junto.
+4. Antes do início do desenvolvimento, limpeza vai direto na `main` em commits `cleanup:`,
+   sem issue nem branch, **mesmo com a `main` protegida** (o dono faz push como admin quando
+   `enforce_admins` está desligado), a menos que o usuário peça PR.
+5. Aplique por grupo de assunto, um commit por grupo: script de substituição que **exige a
+   contagem exata** de cada trecho (falha em vez de editar errado) + `git rm` + ações no GitHub
+   (`gh label delete`, `gh project field-delete --id`, `gh issue edit --body-file -`). Ao
+   apagar label, campo ou template, procure referências também em `.claude/` (skills, scripts)
+   e nos corpos das issues. Lint e testes locais verdes antes do push.
+6. Depois de cortar: renumere seções, busque cada termo removido até dar zero (só pode sobrar
+   no "Fora do escopo"), e apague cópias antigas do plano fora do repo (ou declare a fonte
+   única).
+7. Rode o auditor de novo, confira o CI do último commit e reporte o antes/depois.
 
 ## Relatório final
 
@@ -117,7 +136,10 @@ usuário conferir, fora do escopo, saída do auditor, pendências que são do us
   autor: o GitHub não deixa aprovar o próprio PR, e esses PRs acabam mergeados sem revisão.
   Toda regra de revisão/aprovação precisa de um caminho válido para *cada* autor.
 - **Plano que virou o programa.** Uma spec por issue com o código inteiro produz dez vezes
-  mais linhas de plano que de código. Ninguém lê, e desatualiza no primeiro commit.
+  mais linhas de plano que de código. Ninguém lê, e desatualiza no primeiro commit. Exceção
+  registrada como D do usuário: plano "mastigado" para implementadores pouco autônomos (ver
+  **Proporção**) — aí corte só o que nenhum R/D pede (roteiro de defesa, regras de processo
+  inventadas), não o código de referência.
 - **Conta e nome deduzidos.** Pessoa com duas contas no GitHub: use a que tem commits
   atribuídos recentes. Nome de disciplina, produto ou cliente: copie da fonte, não deduza.
 - **Padrão de produto em projeto que não é produto.** Trabalho de uma entrega não precisa de
@@ -128,7 +150,13 @@ usuário conferir, fora do escopo, saída do auditor, pendências que são do us
 - **Renumerar quebra §.** Depois de cortar seção, procure toda `§N` (o auditor acusa).
 - **Siglas do time.** "TBD" pode ser Trunk-Based Development, não "a definir". Leia o glossário
   do projeto antes de chamar algo de pendência.
-- **Assignee com convite pendente** não pega, e o `gh` não reclama: leia de volta.
+- **Convite pendente** (`gh api repos/O/R/invitations`): assignee não pega e o `gh` não
+  reclama, a linha do CODEOWNERS é inválida e o revisor da matriz não consegue aprovar. Leia
+  de volta e reporte como pendência do usuário.
+- **Proporção justificada.** O auditor rebaixa o aviso de proporção para INFO quando uma linha
+  de decisão do plano (`| D# | ...`) diz que "o plano é maior que o código". Escreva o D com
+  essa frase; sem ela o aviso continua. Seções "Fora do escopo" são ignoradas nas checagens de
+  cronograma, ambientes e placeholders.
 - **Entrevista longa não é qualidade.** Conte rodadas, não perguntas; muitas perguntas = escopo
   grande demais, quebre em partes.
 
@@ -138,6 +166,6 @@ usuário conferir, fora do escopo, saída do auditor, pendências que são do us
 - [ ] Todo número do plano tem comando de origem; nomes próprios copiados da fonte
 - [ ] Toda regra de processo tem caminho válido na plataforma para cada autor
 - [ ] "Fora do escopo" existe e tem motivo por linha
-- [ ] Plano menor que o código esperado; blocos de código só onde decidem algo
+- [ ] Plano menor que o código esperado (ou um D do usuário pede plano com código de referência); blocos de código só onde decidem algo
 - [ ] Auditor: 0 erro, avisos justificados
 - [ ] Revisão de olhos frescos feita e triada
