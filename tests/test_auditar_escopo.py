@@ -63,6 +63,32 @@ class TestAuditor(unittest.TestCase):
             "docs/plano/00.md": "```python\n" + "x = 1\n" * 30 + "```\n",
         })
         self.assertIn("plano maior que o código", saida)
+        self.assertIn("AVISO | `proporção`", saida)
+
+    def test_d_do_usuario_justifica_proporcao(self):
+        _, saida = rodar({
+            "src/a.py": "a = 1\n",
+            "docs/plano/00.md": "## 3. Decisões\n\n| D | Decisão | Motivo |\n|---|---|---|\n"
+                                "| D18 | Código de referência por integrante | Decisão do usuário. "
+                                "Por isso o plano é maior que o código |\n\n"
+                                "```python\n" + "x = 1\n" * 30 + "```\n",
+        })
+        self.assertIn("INFO | `proporção`", saida)
+        self.assertIn("justificado por D18", saida)
+        self.assertNotIn("AVISO", saida)
+
+    def test_fora_do_escopo_nao_dispara_cronograma(self):
+        _, saida = rodar({"docs/plano/00.md": "## 1. Plano\n\nOrdem pelo grafo.\n\n"
+                                              "## 2. Fora do escopo\n\n"
+                                              "| Cronograma com datas | a fonte não fixa prazo |\n"
+                                              "| Ambiente de homologação | não há deploy |\n\n"
+                                              "## 3. Tarefas\n\nT1 (§1).\n"})
+        self.assertNotIn("cronograma/sprint", saida)
+        self.assertNotIn("ambientes", saida)
+
+    def test_cronograma_depois_do_fora_do_escopo_ainda_conta(self):
+        _, saida = rodar({"docs/plano/00.md": "## Fora do escopo\n\n- deploy\n\n## Cronograma\n\nsprint 1\n"})
+        self.assertIn("cronograma/sprint", saida)
 
 
 if __name__ == "__main__":

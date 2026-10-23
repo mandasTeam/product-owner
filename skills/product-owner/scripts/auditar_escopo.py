@@ -56,6 +56,11 @@ RE_USO_IA = re.compile(r"^#{1,6}\s*uso de (ia|intelig[êe]ncia artificial)\b", r
 RE_SECAO_REF = re.compile(r"§\s?(\d+(?:\.\d+)*)")
 RE_TITULO_NUM = re.compile(r"^#{1,6}\s+(\d+(?:\.\d+)*)[.)]?\s", re.M)
 RE_FENCE = re.compile(r"^(```|~~~)", re.M)
+RE_TITULO = re.compile(r"^(#{1,6})\s+(.*)$")
+RE_FORA_ESCOPO = re.compile(r"fora d[oe] escopo|n[ãa]o[- ]escopo|out of scope|non-goals", re.IGNORECASE)
+# Decisão registrada que aceita plano maior que o código (plano "mastigado" com código de referência).
+RE_D_PROPORCAO = re.compile(r"^\|?\s*\**(D\d+)\b.*plano (?:é |fica |sai )?maior que o código",
+                            re.IGNORECASE | re.M)
 
 
 class Achados:
@@ -98,6 +103,23 @@ def sem_codigo(texto: str) -> str:
     return "\n".join(saida)
 
 
+def sem_fora_do_escopo(texto: str) -> str:
+    """Remove as seções "Fora do escopo": ali o plano *nomeia* o que exclui (cronograma, ambientes)."""
+    saida, corte = [], None
+    for linha in texto.splitlines():
+        m = RE_TITULO.match(linha)
+        if m:
+            nivel = len(m.group(1))
+            if corte is not None and nivel <= corte:
+                corte = None
+            if corte is None and RE_FORA_ESCOPO.search(m.group(2)):
+                corte = nivel
+                continue
+        if corte is None:
+            saida.append(linha)
+    return "\n".join(saida)
+
+
 def linhas_de_codigo_em_md(texto: str) -> int:
     dentro, n = False, 0
     for linha in texto.splitlines():
@@ -132,6 +154,8 @@ def auditar(raiz: Path, dirs_plano: list[str], gh_repo: str | None) -> Achados:
     for p in mds:
         t, r = sem_codigo(ler(p)), rel(raiz, p)
         em_plano = p in planos
+        if em_plano:
+            t = sem_codigo(sem_fora_do_escopo(ler(p)))
         if em_plano:
             datas = RE_DATA.findall(t)
             if datas:
@@ -174,7 +198,10 @@ def auditar(raiz: Path, dirs_plano: list[str], gh_repo: str | None) -> Achados:
     lc = sum(linhas_de_codigo_em_md(ler(p)) for p in planos)
     if planos:
         msg = f"plano {lp} linhas ({lc} em blocos de código) × código do repo {loc} linhas"
-        if loc and lp > loc:
+        just = next((m.group(1) for p in planos for m in RE_D_PROPORCAO.finditer(ler(p))), None)
+        if just and (lp > loc or (lp and lc / lp > 0.5)):
+            a.add("INFO", "proporção", msg + f": plano maior que o código, justificado por {just}")
+        elif loc and lp > loc:
             a.add("AVISO", "proporção", msg + ": plano maior que o código = escreveu o código no plano")
         elif lp and lc / lp > 0.5:
             a.add("AVISO", "proporção", msg + ": mais da metade do plano é código; troque corpos por "
