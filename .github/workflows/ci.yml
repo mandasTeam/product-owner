@@ -15,5 +15,8 @@ jobs:
         with:
           python-version: "3.12"
       - run: python -m unittest discover -s tests -v
+      - run: pip install -r tools/requirements.txt
+      - name: Arte do README gera sem erro
+        run: python tools/build_banner.py
       - name: A skill passa na própria auditoria
         run: python skills/product-owner/scripts/auditar_escopo.py .
