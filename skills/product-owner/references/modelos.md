@@ -8,6 +8,11 @@ vazio "para depois".
 ```markdown
 # <Projeto> · Plano
 
+## 0. Hipótese (só no modo MVP)
+H1: Para <segmento>, que <dor>, <solução> faz <resultado>.
+Métrica: <comportamento> ≥ <limiar> em <janela>, medido por <como>. Parada: <resultado>.
+Jornada: <passo> → <passo> → <resultado visível>
+
 ## 1. Fontes
 | Fonte | O que fixa |
 |---|---|
@@ -48,7 +53,7 @@ Grafo de dependências em texto (`T0 → T1 → {T2, T3}`) quando a tabela não 
 
 ```markdown
 ### T2 · <entrega>
-Atende: R4, D7 · Bloqueada por: T1
+Atende: R4, D7 · Fecha: US1.2 · Bloqueada por: T1
 
 Arquivos: `src/pkg/modulo.py` (novo), `tests/test_modulo.py` (novo)
 Interface: `funcao(df: DataFrame, limiar: float = 0.5) -> DataFrame`
@@ -68,8 +73,31 @@ Bloqueada por: #1
 
 ## Critérios de aceite
 - [ ] <verificável por comando ou observação objetiva>
+```
 
-Branch: `<tipo>/<n>-<slug>`
+## `specs/<nnn-slug>/spec.md` (SDD)
+
+Só quando há mais de uma feature especificada; senão histórias e critérios ficam nas tarefas.
+Sem tecnologia: o como vai na tarefa. Formato dos critérios em `sdd.md`.
+
+```markdown
+# <nnn> · <feature>
+Atende: R2, R5 · Plano: docs/plano/00-visao-geral.md
+
+## Histórias
+### US1 · <título> (P1)
+<jornada em linguagem de quem usa>. Teste independente: <como provar só esta história>.
+- US1.1 — Dado <estado>, quando <ação>, então <resultado com valor exato>.
+- US1.2 — Se <erro>, então o sistema deve <resposta>.
+
+## Casos de borda
+- <vazio / duplicado / limite / permissão / falha externa> → <resultado esperado>
+
+## Entidades
+- <Entidade>: <o que representa, atributos que importam>
+
+## Sucesso
+- <resultado mensurável, sem tecnologia>
 ```
 
 ## Tabela do teste de necessidade (modo limpeza)

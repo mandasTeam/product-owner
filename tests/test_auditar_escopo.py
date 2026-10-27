@@ -90,6 +90,20 @@ class TestAuditor(unittest.TestCase):
         _, saida = rodar({"docs/plano/00.md": "## Fora do escopo\n\n- deploy\n\n## Cronograma\n\nsprint 1\n"})
         self.assertIn("cronograma/sprint", saida)
 
+    def test_marca_de_esclarecimento_na_spec_e_placeholder(self):
+        _, saida = rodar({"specs/001-login/spec.md": "- US1.1: autentica via "
+                                                     "[PRECISA ESCLARECER: e-mail ou SSO?]\n"
+                                                     "- US1.2: guarda por [needs clarification]\n"})
+        self.assertIn("2 placeholder(s)", saida)
+
+    def test_todo_minusculo_em_portugues_nao_e_placeholder(self):
+        _, saida = rodar({"docs/plano/00.md": "Todo requisito tem tarefa; todo critério tem teste.\n"})
+        self.assertNotIn("placeholder", saida)
+
+    def test_fora_do_mvp_nao_dispara_cronograma(self):
+        _, saida = rodar({"docs/plano/00.md": "## Fora do MVP\n\n- Cronograma com datas — depois\n"})
+        self.assertNotIn("cronograma/sprint", saida)
+
 
 if __name__ == "__main__":
     unittest.main()

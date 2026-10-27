@@ -23,23 +23,27 @@ Se o caso não bate com a coluna *Quando é necessário*, corte e registre em "F
 | Badges | o badge informa estado (CI, versão, link executável) |
 | Time de agentes / skills herdados de outro projeto | cada peça tem uso real neste repo; diga o que saiu e por quê |
 | Agente revisor com permissão de escrita | nunca; revisor é só leitura |
-| Issue + branch para limpeza antes do desenvolvimento | o usuário pede PR (`main` protegida não basta: o dono faz push como admin) |
-| `CODEOWNERS` | a proteção exige *code owner review*; se o revisor vem de uma matriz no plano, é ruído |
+| Issue + branch para limpeza antes do desenvolvimento | o usuário pede PR |
 | Template de issue "tarefa" | as tarefas ainda não existem como issues; senão duplica o template do agente |
-| Template de PR em dois lugares (`.github/` e skill do agente) | nunca; a skill lê o de `.github/` |
 | Suporte a Colab (badges, célula que clona o repo) | a fonte exige Colab, não "Colab ou GitHub" |
 | Seções "Resumo", "Contribuições" no relatório | a fonte pede; autoria já está no git |
 | `docs/` que repete seção do README | nunca; o README aponta para a tabela/figura gerada |
 | Modelo serializado (`joblib`, `.pkl`) | algum notebook, seção ou deploy carrega o arquivo |
 | "Roteiro de defesa", mínimo de commits por PR, prazo de PR em dias | a fonte ou o usuário pede |
 | Cópia do plano fora do repo | nunca depois do commit inicial |
+| `specs/` com uma pasta só | há mais de uma feature especificada; senão a spec vive nas tarefas do plano |
+| Arquivo de "constituição" do projeto | nunca à parte; princípios são D no plano ou ficam no `AGENTS.md` existente |
+| Andaime de ferramenta de SDD (scripts, templates, comandos copiados) | algum arquivo dele é preenchido por uma feature |
+| Pontuação RICE/ICE, personas, canvas, roadmap | a fonte pede, ou os números vêm de dado medido |
+| Issues para as ideias "Depois" do MVP | nunca antes de a métrica confirmar a hipótese; ficam no Fora do escopo |
 
 ## Sinais de delírio (conteúdo inventado)
 
 - Número sem comando de origem ("cobertura ~40%", "reduz 30% das falhas").
 - Nome deduzido em vez de copiado (disciplina, produto, conta GitHub).
-- Regra de processo que a plataforma não executa (autor aprovando o próprio PR, CODEOWNER sem
-  permissão de escrita, assignee com convite pendente).
+- Regra de processo que a plataforma não executa (autor aprovando o próprio PR, assignee com
+  convite pendente).
 - Promessa da documentação sem código correspondente (perfil "Admin" num sistema sem login).
 - Tarefa ou seção que nenhum R/D pede ("já que estamos aqui, vamos também…").
 - Referência a arquivo, função ou seção que nenhuma tarefa cria.
+- Spec que cita framework, tabela ou endpoint; critério de aceite sem valor exato ("rápido", "fácil").

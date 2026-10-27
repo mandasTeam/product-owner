@@ -50,14 +50,18 @@ RE_CRONO = re.compile(r"\b(cronograma|D0|sprint \d|semana \d|deadline|data limit
 RE_AMBIENTE = re.compile(r"\b(homologa[çc][ãa]o|staging|ambiente de produ[çc][ãa]o|"
                          r"ambiente de desenvolvimento)\b", re.IGNORECASE)
 # "TBD" fica de fora: muitos times usam para Trunk-Based Development, não "a definir".
-RE_PLACEHOLDER = re.compile(r"\b(TODO|FIXME|A DEFINIR|a definir)\b|\[PREENCHER\]|<a definir>")
+# Marca de lacuna da spec (SDD): decisão em aberto até virar D. Só a marca ignora caixa:
+# "todo" minúsculo é português ("todo requisito"), não placeholder.
+RE_PLACEHOLDER = re.compile(r"\b(TODO|FIXME|A DEFINIR|a definir)\b|\[PREENCHER\]|<a definir>|"
+                            r"(?i:\[(?:PRECISA ESCLARECER|NEEDS CLARIFICATION)\b[^\]]*\])")
 RE_CAMINHO_LOCAL = re.compile(r"([A-Za-z]:\\Users\\[^\s`'\"]+|/home/[a-z0-9_-]+/|/Users/[A-Za-z0-9_-]+/)")
 RE_USO_IA = re.compile(r"^#{1,6}\s*uso de (ia|intelig[êe]ncia artificial)\b", re.IGNORECASE | re.M)
 RE_SECAO_REF = re.compile(r"§\s?(\d+(?:\.\d+)*)")
 RE_TITULO_NUM = re.compile(r"^#{1,6}\s+(\d+(?:\.\d+)*)[.)]?\s", re.M)
 RE_FENCE = re.compile(r"^(```|~~~)", re.M)
 RE_TITULO = re.compile(r"^(#{1,6})\s+(.*)$")
-RE_FORA_ESCOPO = re.compile(r"fora d[oe] escopo|n[ãa]o[- ]escopo|out of scope|non-goals", re.IGNORECASE)
+RE_FORA_ESCOPO = re.compile(r"fora d[oe] (escopo|mvp)|n[ãa]o[- ]escopo|out of scope|non-goals",
+                            re.IGNORECASE)
 # Decisão registrada que aceita plano maior que o código (plano "mastigado" com código de referência).
 RE_D_PROPORCAO = re.compile(r"^\|?\s*\**(D\d+)\b.*plano (?:é |fica |sai )?maior que o código",
                             re.IGNORECASE | re.M)
