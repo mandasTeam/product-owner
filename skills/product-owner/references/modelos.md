@@ -1,7 +1,8 @@
 # Modelos
 
 Esqueletos mínimos. Seção que não tem conteúdo real no projeto não entra — não deixe título
-vazio "para depois".
+vazio "para depois". No plano: §0 só no modo MVP; §5 só com número ou fato que uma tarefa
+ou decisão usa; §7 e o bloco "Tarefa dentro do plano" só no nível *implementação*.
 
 ## `docs/plano/00-visao-geral.md`
 
@@ -38,7 +39,7 @@ Jornada: <passo> → <passo> → <resultado visível>
 ## 6. Tarefas
 | T | Entrega | Atende | Responsável | Revisor | Bloqueada por |
 |---|---|---|---|---|---|
-| T1 | <entregável verificável> | R1, R2, D3 | @login | @login | — |
+| T1 | <entregável verificável> | R1, R2, D3 | <@login conferido ou pendência> | <@login ou —> | — |
 
 ## 7. Contratos entre tarefas
 <só o que uma tarefa consome de outra: assinaturas, nomes de arquivo, colunas>
@@ -61,6 +62,14 @@ Valores da fonte: <exatos>
 Teste: `test_funcao_rejeita_vazamento` — `funcao(df_com_alvo)` levanta `ValueError`
 Verificação: `pytest -q tests/test_modulo.py` → `N passed`
 ```
+
+## Backlog no GitHub (passo 9)
+
+Ordem, com `gh`: repo → arquivos do commit inicial → labels (apague as padrão que nada usa) →
+issues em ordem de dependência → Project → convites para quem recebe issue. Issue-mãe também
+leva checkbox (o auditor acusa sem) e aponta para a tabela de tarefas em vez de copiá-la.
+Leitura de volta: `gh issue list`, `gh project item-list` e `gh api repos/O/R/invitations` —
+convite pendente não deixa o assignee pegar a issue e o `gh` não reclama.
 
 ## Corpo de issue
 

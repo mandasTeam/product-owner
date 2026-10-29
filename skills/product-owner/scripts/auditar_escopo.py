@@ -124,6 +124,13 @@ def sem_fora_do_escopo(texto: str) -> str:
     return "\n".join(saida)
 
 
+def no_plano(caminho: str, alvo: str) -> bool:
+    """`alvo` é pasta ou arquivo do plano, relativo à raiz; "." vale o repo inteiro."""
+    alvo = alvo.replace("\\", "/").strip("/")
+    alvo = alvo[2:] if alvo.startswith("./") else alvo
+    return alvo in ("", ".") or caminho == alvo or caminho.startswith(alvo + "/")
+
+
 def linhas_de_codigo_em_md(texto: str) -> int:
     dentro, n = False, 0
     for linha in texto.splitlines():
@@ -138,7 +145,7 @@ def auditar(raiz: Path, dirs_plano: list[str], gh_repo: str | None) -> Achados:
     a = Achados()
     todos = list(arquivos(raiz))
     mds = [p for p in todos if p.suffix.lower() == ".md"]
-    planos = [p for p in mds if any(rel(raiz, p).startswith(d.rstrip("/") + "/") for d in dirs_plano)]
+    planos = [p for p in mds if any(no_plano(rel(raiz, p), d) for d in dirs_plano)]
 
     # 1. Arquivos suspeitos na raiz e em .github/
     for p in todos:
@@ -196,7 +203,8 @@ def auditar(raiz: Path, dirs_plano: list[str], gh_repo: str | None) -> Achados:
     # 4. Proporção plano × código
     loc = 0
     for p in todos:
-        if p.suffix.lower() in EXT_CODIGO and not any(rel(raiz, p).startswith(d) for d in dirs_plano):
+        if p.suffix.lower() in EXT_CODIGO and not any(no_plano(rel(raiz, p), d) for d in dirs_plano
+                                                      if d.strip("./")):
             loc += sum(1 for linha in ler(p).splitlines() if linha.strip())
     lp = sum(len(ler(p).splitlines()) for p in planos)
     lc = sum(linhas_de_codigo_em_md(ler(p)) for p in planos)
@@ -275,7 +283,8 @@ def main() -> int:
     ap.add_argument("repo", type=Path)
     ap.add_argument("--gh", metavar="DONO/REPO", help="também audita labels e issues no GitHub")
     ap.add_argument("--plano", action="append", metavar="DIR",
-                    help=f"pasta(s) de planejamento (padrão: {', '.join(DIRS_PLANO_PADRAO)})")
+                    help=f"pasta ou arquivo de planejamento, relativo ao repo; '.' = todos os .md "
+                         f"(padrão: {', '.join(DIRS_PLANO_PADRAO)})")
     args = ap.parse_args()
     raiz = args.repo.resolve()
     if not raiz.is_dir():

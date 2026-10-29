@@ -10,13 +10,13 @@ from pathlib import Path
 SCRIPT = Path(__file__).resolve().parents[1] / "skills" / "product-owner" / "scripts" / "auditar_escopo.py"
 
 
-def rodar(arquivos: dict[str, str]) -> tuple[int, str]:
+def rodar(arquivos: dict[str, str], *args: str) -> tuple[int, str]:
     with tempfile.TemporaryDirectory() as d:
         for nome, conteudo in arquivos.items():
             p = Path(d, nome)
             p.parent.mkdir(parents=True, exist_ok=True)
             p.write_text(textwrap.dedent(conteudo), encoding="utf-8")
-        r = subprocess.run([sys.executable, str(SCRIPT), d], capture_output=True, text=True,
+        r = subprocess.run([sys.executable, str(SCRIPT), d, *args], capture_output=True, text=True,
                            encoding="utf-8")
         return r.returncode, r.stdout
 
@@ -103,6 +103,12 @@ class TestAuditor(unittest.TestCase):
     def test_fora_do_mvp_nao_dispara_cronograma(self):
         _, saida = rodar({"docs/plano/00.md": "## Fora do MVP\n\n- Cronograma com datas — depois\n"})
         self.assertNotIn("cronograma/sprint", saida)
+
+    def test_plano_fora_da_pasta_padrao_com_opcao_plano(self):
+        arquivos = {"plano.md": "## Cronograma\n\nsprint 1\n"}
+        self.assertNotIn("cronograma/sprint", rodar(arquivos)[1])
+        for alvo in (".", "plano.md", "./plano.md"):
+            self.assertIn("cronograma/sprint", rodar(arquivos, "--plano", alvo)[1], alvo)
 
 
 if __name__ == "__main__":

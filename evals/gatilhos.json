@@ -1,0 +1,20 @@
+[
+  {"consulta": "tenho uma ideia de app pra controlar o estoque da lanchonete da minha tia, me ajuda a ver o que dá pra fazer primeiro?", "deve_disparar": true},
+  {"consulta": "o cliente mandou o documento de requisitos do portal de pedidos (tá em Downloads/requisitos-portal.pdf), monta o planejamento e as issues", "deve_disparar": true},
+  {"consulta": "antes de mandar o claude implementar o login com 2FA quero uma spec decente com critério de aceite, escreve pra mim", "deve_disparar": true},
+  {"consulta": "esse plano em docs/plano tá enorme e cheio de coisa que ninguém pediu, enxuga", "deve_disparar": true},
+  {"consulta": "a issue #42 pede relatório de comissão por vendedor, quebra isso em tarefas com critério de aceite", "deve_disparar": true},
+  {"consulta": "herdei esse repo de outro time e preciso adicionar multi-idioma, planeja o que muda antes de sair codando", "deve_disparar": true},
+  {"consulta": "cria o Project no github com as tarefas do plano do portal e distribui entre o time", "deve_disparar": true},
+  {"consulta": "a galera jogou umas 20 ideias no whatsapp, quero fechar o que entra na primeira versão", "deve_disparar": true},
+  {"consulta": "o professor mandou o enunciado do trabalho de banco de dados (tá em Downloads/trabalho-bd.pdf), monta o planejamento e as issues pro grupo", "deve_disparar": false, "vizinha": "academic-group-project"},
+  {"consulta": "cria o Project no github com as tarefas do trabalho da faculdade e distribui entre o pessoal do grupo", "deve_disparar": false, "vizinha": "academic-group-project"},
+  {"consulta": "cria uma skill pro agente revisar escopo de projeto", "deve_disparar": false, "vizinha": "skill-author"},
+  {"consulta": "deixa o README do repo do trabalho bonito, com banner e tudo", "deve_disparar": false, "vizinha": "readme-design"},
+  {"consulta": "configura o github actions pra rodar os testes em todo PR", "deve_disparar": false, "vizinha": "github"},
+  {"consulta": "lista as issues abertas do srec e me diz quais tão sem assignee", "deve_disparar": false, "vizinha": "github"},
+  {"consulta": "revisa o PR #30 e vê se o código tá bom antes do merge", "deve_disparar": false, "vizinha": "requesting-code-review"},
+  {"consulta": "monta um plano de estudos pra prova de engenharia de requisitos de sexta", "deve_disparar": false},
+  {"consulta": "escreve o teste unitário do critério US1.2 que já tá na spec, red-green", "deve_disparar": false, "vizinha": "test-driven-development"},
+  {"consulta": "quero testar rapidinho se a API do correios devolve o prazo por CEP antes de decidir qualquer coisa", "deve_disparar": false, "vizinha": "spike"}
+]
